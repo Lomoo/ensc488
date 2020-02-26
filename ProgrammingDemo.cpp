@@ -12,7 +12,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	JOINT q1 = {0, 0, -100, 0};
-	JOINT q2 = {90, 90, -200, 45};
+	JOINT q2 = {90, 90, -250, 45};
 	printf("Keep this window in focus, and...\n");
 	
 
