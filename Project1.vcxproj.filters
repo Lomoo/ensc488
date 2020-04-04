@@ -38,6 +38,9 @@
     <ClInclude Include="InverseKin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlanningTrajectory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="PowerCubeSim.lib">

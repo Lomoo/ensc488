@@ -131,6 +131,7 @@
     <ClInclude Include="globalRobotConfig.h" />
     <ClInclude Include="InverseKin.h" />
     <ClInclude Include="matrix.h" />
+    <ClInclude Include="PlanningTrajectory.h" />
     <ClInclude Include="WHERE.h" />
   </ItemGroup>
   <ItemGroup>

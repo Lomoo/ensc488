@@ -1,3 +1,6 @@
 ﻿  test.cpp
-c:\users\sully\source\repos\project1\project1\test.cpp(157): warning C4326: return type of 'main' should be 'int' instead of 'void'
-  Project1.vcxproj -> C:\Users\sully\source\repos\Project1\Debug\Project1.exe
+c:\users\sully\desktop\488\planningtrajectory.h(255): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\sully\desktop\488\planningtrajectory.h(267): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\sully\desktop\488\planningtrajectory.h(399): warning C4018: '<': signed/unsigned mismatch
+c:\users\sully\desktop\488\test.cpp(259): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  Project1.vcxproj -> C:\Users\sully\Desktop\488\Debug\Project1.exe
