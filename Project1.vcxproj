@@ -137,6 +137,13 @@
   <ItemGroup>
     <Library Include="PowerCubeSim.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="plannedA.txt" />
+    <Text Include="plannedP.txt" />
+    <Text Include="plannedV.txt" />
+    <Text Include="viapointsCartesian.txt" />
+    <Text Include="viapointsJointSpace.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

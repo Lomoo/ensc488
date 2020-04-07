@@ -61,6 +61,7 @@ void INVKIN(matrix T_BW, vect current, vect& near_sol, vect& far_sol, bool& sol)
 		theta1 = RAD2DEG(atan2(((L3 + L4 * cos(theta2))*y - L4 * sin(theta2)*x), ((L3 + L4 * cos(theta2))*x + L4 * sin(theta2)*y)));
 		theta2 = RAD2DEG(theta2);
 		d3 = L1 + L2 - z - 410 - L6;
+
 		theta4 = theta1 + theta2 - phi;
 
 		vect solution = { theta1, theta2, d3, theta4 };

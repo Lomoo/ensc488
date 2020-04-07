@@ -10,7 +10,7 @@
 //////////////////////////
 // Trajectory Constants //
 //////////////////////////
-#define filename "viapoints.txt"
+#define filename "viapointsCartesian.txt"
 #define SAMPLING_RATE 10
 #define MAX_VIA_POINTS 5
 #define MAX_TIME 17

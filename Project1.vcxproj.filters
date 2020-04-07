@@ -47,4 +47,21 @@
       <Filter>Resource Files</Filter>
     </Library>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="plannedA.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="plannedP.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="plannedV.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="viapointsJointSpace.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="viapointsCartesian.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

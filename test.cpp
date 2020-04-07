@@ -18,7 +18,7 @@ void TrajectoryPlanning()
 {
 	int num_via;
 
-	cout << "Input Number of Via points in file";
+	cout << "Input Number of Via points in file\n";
 	cin >> num_via;
 	cout << endl;
 
@@ -119,7 +119,7 @@ void WriteJointToCartisan(std::ofstream& fid, vect JointTraj)
 
 	vect cartcoords = { 0,0,0,0 };
 	WHERE(JointTraj[0], JointTraj[1], JointTraj[2], JointTraj[3], cartcoords);
-	
+
 
 }
 void InverseKin()
@@ -266,7 +266,7 @@ void main()
 
 	while (main_loop)
 	{
-		cout << "Pick From the list of options\n\t0 : Exit\n\t1 : ForwardKin\n\t2 : InverseKin\n "<< endl;
+		cout << "Pick From the list of options\n\t0 : Exit\n\t1 : ForwardKin\n\t2 : InverseKin\n\t3 : Cubic Spline\n" << endl;
 
 		int user_input;
 		cin >> user_input;
@@ -296,4 +296,5 @@ void main()
 
 	EndSession();
 }
+
 
