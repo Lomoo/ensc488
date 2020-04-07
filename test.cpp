@@ -104,8 +104,13 @@ void TrajectoryPlanning()
 	TraGen(times, via1, via2, via3, via4, param1, param2, param3, param4, num_via);
 	TraCalc(times, param1, param2, param3, param4, num_via, SAMPLING_RATE_T1, JointPosArray, JointVelArray, JointAccelArray, num_samples);
 
-	TraExec(JointPosArray, JointVelArray, JointAccelArray, SAMPLING_RATE_T1, num_samples);
-
+	if (!TraOutOfLimits(JointPosArray, JointVelArray, JointAccelArray, num_samples)) {
+		TraExec(JointPosArray, JointVelArray, JointAccelArray, SAMPLING_RATE_T1, num_samples);
+	}
+	else {
+		cout << "Cannot move robot due to limits" << endl;
+	}
+	
 	StopRobot();
 	ResetRobot();
 	JOINT config = { 0, 0, 0, 0 };

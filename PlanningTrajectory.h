@@ -259,6 +259,11 @@ void TraCalc(double via_times[5], matrix param1, matrix param2, matrix param3, m
 			JointAclArray[cur_sample][2] = 2 * param3[cur_seg][2] + 6 * param3[cur_seg][3] * (tau - via_times[cur_seg]);
 			JointAclArray[cur_sample][3] = 2 * param4[cur_seg][2] + 6 * param4[cur_seg][3] * (tau - via_times[cur_seg]);
 			tau += time;
+
+			
+
+
+			
 		}
 	}
 
@@ -347,6 +352,57 @@ void TraCalc(double via_times[5], matrix param1, matrix param2, matrix param3, m
 
 }
 
+bool TraOutOfLimits(vect* JointPosArray, vect* JointVelArray, vect* JointAccArray, unsigned int num_of_samples) {
+	
+	for (int i = 0; i < num_of_samples; i++) 
+	{
+		
+		if (VelTheta1Check(JointVelArray[i][0]) || VelTheta2Check(JointVelArray[i][1]) || VelD3Check(JointVelArray[i][2]) || VelTheta4Check(JointVelArray[i][3]) ||
+			AccTheta1Check(JointVelArray[i][0]) || AccTheta2Check(JointVelArray[i][1]) || AccD3Check(JointVelArray[i][2]) || AccTheta4Check(JointVelArray[i][3])) 
+		{
+		
+			if (VelTheta1Check(JointVelArray[i][0]))
+			{
+				std::cout << "Joint 1 Velocity of " << JointVelArray[i][0] << " m/s reached, exiting" << std::endl;
+			}
+			else if (VelTheta2Check(JointVelArray[i][1]))
+			{
+				std::cout << "Joint 2 Velocity of " << JointVelArray[i][1] << " m/s reached, exiting" << std::endl;
+			}
+			else if (VelD3Check(JointVelArray[i][2]))
+			{
+				std::cout << "Joint 3 Velocity of " << JointVelArray[i][2] << " m/s reached, exiting" << std::endl;
+			}
+			else if (VelTheta4Check(JointVelArray[i][3]))
+			{
+				std::cout << "Joint 4 Velocity of " << JointVelArray[i][3] << " m/s reached, exiting" << std::endl;
+			}
+
+
+			if (AccTheta1Check(JointVelArray[i][0]))
+			{
+				std::cout << "Joint 1 Acceleration of " << JointAccArray[i][0] << " m/s² reached, exiting" << std::endl;
+			}
+			else if (AccTheta2Check(JointVelArray[i][1]))
+			{
+				std::cout << "Joint 2 Acceleration of " << JointAccArray[i][1] << " m/s² reached, exiting" << std::endl;
+			}
+			else if (AccD3Check(JointVelArray[i][2]))
+			{
+				std::cout << "Joint 3 Acceleration of " << JointAccArray[i][2] << " m/s² reached, exiting" << std::endl;
+			}
+			else if (AccTheta4Check(JointVelArray[i][3]))
+			{
+				std::cout << "Joint 4 Acceleration of " << JointAccArray[i][3] << " m/s² reached, exiting" << std::endl;
+			}
+			
+			
+			return true;
+		}
+	}
+	return false;
+
+}
 
 // Execute Trajectory
 void TraExec(vect* JointPosArray, vect* JointVelArray, vect* JointAccArray, double sampling_rate, unsigned int num_of_samples)

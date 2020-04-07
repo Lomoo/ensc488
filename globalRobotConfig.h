@@ -10,7 +10,11 @@
 //////////////////////////
 // Trajectory Constants //
 //////////////////////////
-#define filename "viapoints.txt"
+//#define filename "viapoints.txt"
+#define filename "velocityLimits.txt"
+//#define filename "JointLimits.txt"
+//#define filename "JointLimits2.txt"
+//#define filename "extraTests.txt"
 #define SAMPLING_RATE 10
 #define MAX_VIA_POINTS 5
 #define MAX_TIME 17
@@ -61,19 +65,23 @@ const double FrictionCoef = 5.0;
 //////////////////
 const double THETA1_MAX = 150.0f;
 const double THETA1_MIN = -150.0f;
-const double VelTheta1_MAX = 10.0f;
+const double VelTheta1_MAX = 150.0f;
+const double AccTheta1_Max = 600.0f;
 
 const double THETA2_MAX = 100.0f;
 const double THETA2_MIN = -100.0f;
-const double VelTheta2_MAX = 10.0f;
+const double VelTheta2_MAX = 150.0f;
+const double AccTheta2_Max = 600.0f;
 
 const double D3_MAX = -100.0f;
 const double D3_MIN = -200.0f;
-const double VelD3_MAX = 10.0f;
+const double VelD3_MAX = 50.0f;
+const double AccD3_Max = 200.0f;
 
 const double THETA4_MAX = 160.0f;
 const double THETA4_MIN = -160.0f;
-const double VelTheta4_MAX = 10.0f;
+const double VelTheta4_MAX = 150.0f;
+const double AccTheta4_Max = 600.0f;
 
 //////////////////
 // Known Frames //
@@ -126,6 +134,87 @@ bool D3Check2(double dist)
 	return ((dist <= D3_MAX || dist >= D3_MIN) ? false : true);
 }
 
+//Velocity
+bool VelTheta1Check(double vel)
+{
+	if ((vel > VelTheta1_MAX || vel < -VelTheta1_MAX)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool VelTheta2Check(double vel)
+{
+	if ((vel > VelTheta2_MAX || vel < -VelTheta2_MAX)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool VelD3Check(double vel)
+{
+	if ((vel > AccD3_Max || vel < -AccD3_Max)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool VelTheta4Check(double vel)
+{
+	if ((vel > VelTheta4_MAX || vel < -VelTheta4_MAX)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+//Accleration
+bool AccTheta1Check(double acc)
+{
+	if ((acc > AccTheta4_Max || acc < -AccTheta4_Max)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool AccTheta2Check(double acc)
+{
+	if ((acc > AccTheta4_Max || acc < -AccTheta4_Max)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool AccD3Check(double acc)
+{
+	if ((acc > VelD3_MAX || acc < -VelD3_MAX)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool AccTheta4Check(double acc)
+{
+	if ((acc > AccTheta4_Max || acc < -AccTheta4_Max)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 void JointToVect(JOINT joint, vect& vector)
 {
 	for (int i = 0; i < NUM_OF_LINK_VARS; i++)
