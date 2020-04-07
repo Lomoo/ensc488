@@ -266,7 +266,7 @@ void main()
 
 	while (main_loop)
 	{
-		cout << "Pick From the list of options\n\t0 : Exit\n\t1 : ForwardKin\n\t2 : InverseKin\n "<< endl;
+		cout << "Pick From the list of options\n\t0 : Exit\n\t1 : ForwardKin\n\t2 : InverseKin\n\t3 : Trajectory Planner\n\t4 : Grasp/UnGrasp "<< endl;
 
 		int user_input;
 		cin >> user_input;
@@ -287,6 +287,11 @@ void main()
 		else if (user_input == 3)
 		{
 			TrajectoryPlanning();
+		}
+		else if (user_input == 4)
+		{
+			gGrasp = !gGrasp;
+			Grasp(gGrasp);
 		}
 		else
 		{

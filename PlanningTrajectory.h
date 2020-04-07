@@ -150,7 +150,7 @@ void TraGen(double via_times[5], double theta1_via[5], double theta2_via[5], dou
 	return;
 }
 
-// Calculate Trajectory Joint Value and Velocitiy and Acceleration
+// Calculate Trajectory Joint Value and Velocity and Acceleration
 void TraCalc(double via_times[5], matrix param1, matrix param2, matrix param3, matrix param4, int num_via, unsigned int sampling_rate,
 	vect* JointPosArray,
 	vect* JointVelArray,
