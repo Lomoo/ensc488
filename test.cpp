@@ -290,8 +290,17 @@ void main()
 		}
 		else if (user_input == 4)
 		{
-			gGrasp = !gGrasp;
-			Grasp(gGrasp);
+			if (gGrasp) {
+				cout << "Grasp currently enabled, disabling.\n";
+				gGrasp = !gGrasp;
+			}
+			else {
+				cout << "Grasp currently disabled, enabling.\n";
+				gGrasp = !gGrasp;
+				Grasp(gGrasp);
+			}
+			
+			
 		}
 		else
 		{

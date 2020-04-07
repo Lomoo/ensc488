@@ -9,7 +9,6 @@
 #include <fstream>
 
 
-
 //Read Via points from text file "viapoints"
 void ReadViaPoints(double via_times[5], double x_via[5], double y_via[5], double z_via[5], double phi_via[5], int num_via) {
 	double temp[5][5];
@@ -63,94 +62,150 @@ void TraGen(double via_times[5], double theta1_via[5], double theta2_via[5], dou
 	double v3_via[MAX_VIA_POINTS];
 	double v4_via[MAX_VIA_POINTS];
 
-	for (int i = 0; i < num_via; i++) {
-		v1_via[i] = 0;
-		v2_via[i] = 0;
-		v3_via[i] = 0;
-		v4_via[i] = 0;
+	//for (int i = 0; i < num_via; i++) {
+	//	v1_via[i] = 0;
+	//	v2_via[i] = 0;
+	//	v3_via[i] = 0;
+	//	v4_via[i] = 0;
+
+	//}
+
+	////calculate via point velocities as average//
+	////inital and final velocity remain 0 to obtain a smooth start/stop
+
+	//for (int i = 1; i < num_via-1; i++) {
+	//	v1_via[i] = (((theta1_via[i] - theta1_via[i - 1]) / h[i - 1]) + ((theta1_via[i + 1] - theta1_via[i]) / h[i])) / 2;
+	//	v2_via[i] = (((theta2_via[i] - theta2_via[i - 1]) / h[i - 1]) + ((theta2_via[i + 1] - theta2_via[i]) / h[i])) / 2;
+	//	v3_via[i] = (((d3_via[i] - d3_via[i - 1]) / h[i - 1]) + ((d3_via[i + 1] - d3_via[i]) / h[i])) / 2;
+	//	v4_via[i] = (((theta4_via[i] - theta4_via[i - 1]) / h[i - 1]) + ((theta4_via[i + 1] - theta4_via[i]) / h[i])) / 2;
+	//}
+
+	double a_theta1[MAX_VIA_POINTS];
+	double b_theta1[MAX_VIA_POINTS];
+	double c_theta1[MAX_VIA_POINTS];
+	double d_theta1[MAX_VIA_POINTS];
+	double a_theta2[MAX_VIA_POINTS];
+	double b_theta2[MAX_VIA_POINTS];
+	double c_theta2[MAX_VIA_POINTS];
+	double d_theta2[MAX_VIA_POINTS];
+	double a_d3[MAX_VIA_POINTS];
+	double b_d3[MAX_VIA_POINTS];
+	double c_d3[MAX_VIA_POINTS];
+	double d_d3[MAX_VIA_POINTS];
+	double a_theta4[MAX_VIA_POINTS];
+	double b_theta4[MAX_VIA_POINTS];
+	double c_theta4[MAX_VIA_POINTS];
+	double d_theta4[MAX_VIA_POINTS];
+	double w_theta1 = 0;
+	double w_theta2 = 0;
+	double w_theta3 = 0;
+	double w_theta4 = 0;
+
+
+	a_theta1[0] = 0;
+	for (int i = 0; i < num_via - 2; i++) {
+		b_theta1[i] = 4 / h[i] + 4 / h[i + 1];
+		b_theta2[i] = 4 / h[i] + 4 / h[i + 1];
+		b_d3[i] = 4 / h[i] + 4 / h[i + 1];
+		b_theta4[i] = 4 / h[i] + 4 / h[i + 1];
+
+		if (i != num_via - 2) {
+			c_theta1[i] = 2 / h[i + 1];
+			c_theta2[i] = 2 / h[i + 1];
+			c_d3[i] = 2 / h[i + 1];
+			c_theta4[i] = 2 / h[i + 1];
+		}
+		if (i != 0) {
+			a_theta1[i] = 2 / h[i];
+			a_theta2[i] = 2 / h[i];
+			a_d3[i] = 2 / h[i];
+			a_theta4[i] = 2 / h[i];
+		}
+		d_theta1[i] = 6.*((theta1_via[i + 1] - theta1_via[i]) / pow(h[i], 2) + (theta1_via[i + 2] - theta1_via[i + 1]) / pow(h[i + 1], 2));
+		d_theta2[i] = 6.*((theta2_via[i + 1] - theta2_via[i]) / pow(h[i], 2) + (theta2_via[i + 2] - theta2_via[i + 1]) / pow(h[i + 1], 2));
+		d_d3[i] = 6.*((d3_via[i + 1] - d3_via[i]) / pow(h[i], 2) + (d3_via[i + 2] - d3_via[i + 1]) / pow(h[i + 1], 2));
+		d_theta4[i] = 6.*((theta4_via[i + 1] - theta4_via[i]) / pow(h[i], 2) + (theta4_via[i + 2] - theta4_via[i + 1]) / pow(h[i + 1], 2));
+	}
+
+	for (int i = 1; i < num_via - 2; i++) {
+		w_theta1 = a_theta1[i] / b_theta1[i - 1];
+		b_theta1[i] = b_theta1[i] - w_theta1 * c_theta1[i - 1];
+		d_theta1[i] = d_theta1[i] - w_theta1 * d_theta1[i - 1];
+
+		w_theta2 = a_theta2[i] / b_theta2[i - 1];
+		b_theta2[i] = b_theta2[i] - w_theta2 * c_theta2[i - 1];
+		d_theta2[i] = d_theta2[i] - w_theta2 * d_theta2[i - 1];
+
+		w_theta3 = a_d3[i] / b_d3[i - 1];
+		b_d3[i] = b_d3[i] - w_theta3 * c_d3[i - 1];
+		d_d3[i] = d_d3[i] - w_theta3 * d_d3[i - 1];
+
+		w_theta4 = a_theta4[i] / b_theta4[i - 1];
+		b_theta4[i] = b_theta4[i] - w_theta4 * c_theta4[i - 1];
+		d_theta4[i] = d_theta4[i] - w_theta4 * d_theta4[i - 1];
 
 	}
 
-	//calculate via point velocities as average//
-	//inital and final velocity remain 0 to obtain a smooth start/stop
+	v1_via[num_via - 2] = d_theta1[num_via - 3] / b_theta1[num_via - 3];
+	v2_via[num_via - 2] = d_theta2[num_via - 3] / b_theta2[num_via - 3];
+	v3_via[num_via - 2] = d_d3[num_via - 3] / b_d3[num_via - 3];
+	v4_via[num_via - 2] = d_theta4[num_via - 3] / b_theta4[num_via - 3];
 
-	for (int i = 1; i < num_via - 1; i++) {
-		v1_via[i] = (((theta1_via[i] - theta1_via[i - 1]) / h[i - 1]) + ((theta1_via[i + 1] - theta1_via[i]) / h[i])) / 2;
+	for (int i = num_via - 1; i >= 0; i--) {
+		if (i == 0 || i == num_via - 1) {
+			v1_via[i] = 0;
+			v2_via[i] = 0;
+			v3_via[i] = 0;
+			v4_via[i] = 0;
+			continue;
+		}
+		else if (i == num_via - 2) {
+			continue;
+		}
+		v1_via[i] = (d_theta1[i - 1] - v1_via[i + 1] * c_theta1[i - 1]) / b_theta1[i - 1];
+		v2_via[i] = (d_theta2[i - 1] - v2_via[i + 1] * c_theta2[i - 1]) / b_theta2[i - 1];
+		v3_via[i] = (d_d3[i - 1] - v3_via[i + 1] * c_d3[i - 1]) / b_d3[i - 1];
+		v4_via[i] = (d_theta4[i - 1] - v4_via[i + 1] * c_theta4[i - 1]) / b_theta4[i - 1];
+
 	}
-	for (int i = 1; i < num_via - 1; i++) {
-		v2_via[i] = (((theta2_via[i] - theta2_via[i - 1]) / h[i - 1]) + ((theta2_via[i + 1] - theta2_via[i]) / h[i])) / 2;
-	}
-	for (int i = 1; i < num_via - 1; i++) {
-		v3_via[i] = (((d3_via[i] - d3_via[i - 1]) / h[i - 1]) + ((d3_via[i + 1] - d3_via[i]) / h[i])) / 2;
-	}
-	for (int i = 1; i < num_via - 1; i++) {
-		v4_via[i] = (((theta4_via[i] - theta4_via[i - 1]) / h[i - 1]) + ((theta4_via[i + 1] - theta4_via[i]) / h[i])) / 2;
-	}
+
 
 	//calculate parameters//
 
 	// for theta1:
 	for (int i = 0; i < num_via - 1; i++) {
 		param1[i][0] = theta1_via[i];  //parameter a
+		param1[i][1] = v1_via[i]; //parameter b
+		param1[i][2] = 3 * (theta1_via[i + 1] - theta1_via[i]) / pow(h[i], 2) - 2 * v1_via[i] / h[i] - v1_via[i + 1] / h[i];//parameter d
+		param1[i][3] = -2 * (theta1_via[i + 1] - theta1_via[i]) / pow(h[i], 3) + (v1_via[i + 1] + v1_via[i]) / pow(h[i], 2); //parameter c
 	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param1[i][1] = h[i] * v1_via[i]; //parameter b
-	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param1[i][3] = h[i] * v1_via[i + 1] + 2 * param1[i][0] + param1[i][1] - 2 * theta1_via[i + 1]; //parameter d
-	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param1[i][2] = theta1_via[i + 1] - param1[i][0] - param1[i][1] - param1[i][3]; //parameter c
-	}
-
 
 	//for theta2:
 	for (int i = 0; i < num_via - 1; i++) {
 		param2[i][0] = theta2_via[i];  //parameter a
+		param2[i][1] = v2_via[i]; //parameter b
+		param2[i][2] = 3 * (theta2_via[i + 1] - theta2_via[i]) / pow(h[i], 2) - 2 * v2_via[i] / h[i] - v2_via[i + 1] / h[i];//parameter d
+		param2[i][3] = -2 * (theta2_via[i + 1] - theta2_via[i]) / pow(h[i], 3) + (v2_via[i + 1] + v2_via[i]) / pow(h[i], 2); //parameter c
 	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param2[i][1] = h[i] * v2_via[i]; //parameter b
-	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param2[i][3] = h[i] * v2_via[i + 1] + 2 * param2[i][0] + param2[i][1] - 2 * theta2_via[i + 1]; //parameter d
-	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param2[i][2] = theta2_via[i + 1] - param2[i][0] - param2[i][1] - param2[i][3]; //parameter c
-	}
-
 
 	//for theta3:
 	for (int i = 0; i < num_via - 1; i++) {
 		param3[i][0] = d3_via[i];  //parameter a
+		param3[i][1] = v3_via[i]; //parameter b
+		param3[i][2] = 3 * (d3_via[i + 1] - d3_via[i]) / pow(h[i], 2) - 2 * v3_via[i] / h[i] - v3_via[i + 1] / h[i];//parameter d
+		param3[i][3] = -2 * (d3_via[i + 1] - d3_via[i]) / pow(h[i], 3) + (v3_via[i + 1] + v3_via[i]) / pow(h[i], 2); //parameter c
 	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param3[i][1] = h[i] * v3_via[i]; //parameter b
-	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param3[i][3] = h[i] * v3_via[i + 1] + 2 * param3[i][0] + param3[i][1] - 2 * d3_via[i + 1]; //parameter d
-	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param3[i][2] = d3_via[i + 1] - param3[i][0] - param3[i][1] - param3[i][3]; //parameter c
-	}
-
 
 	//for theta4:
 	for (int i = 0; i < num_via - 1; i++) {
 		param4[i][0] = theta4_via[i];  //parameter a
+		param4[i][1] = v4_via[i]; //parameter b
+		param4[i][2] = 3 * (theta4_via[i + 1] - theta4_via[i]) / pow(h[i], 2) - 2 * v4_via[i] / h[i] - v4_via[i + 1] / h[i];//parameter d
+		param4[i][3] = -2 * (theta4_via[i + 1] - theta4_via[i]) / pow(h[i], 3) + (v4_via[i + 1] + v4_via[i]) / pow(h[i], 2); //parameter c
 	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param4[i][1] = h[i] * v4_via[i]; //parameter b
-	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param4[i][3] = h[i] * v4_via[i + 1] + 2 * param4[i][0] + param4[i][1] - 2 * theta4_via[i + 1]; //parameter d
-	}
-	for (int i = 0; i < num_via - 1; i++) {
-		param4[i][2] = theta4_via[i + 1] - param4[i][0] - param4[i][1] - param4[i][3]; //parameter c
-	}
-	return;
 }
 
-// Calculate Trajectory Joint Value and Velocity and Acceleration
+// Calculate Trajectory Joint Value and Velocitiy and Acceleration
 void TraCalc(double via_times[5], matrix param1, matrix param2, matrix param3, matrix param4, int num_via, unsigned int sampling_rate,
 	vect* JointPosArray,
 	vect* JointVelArray,
@@ -169,61 +224,60 @@ void TraCalc(double via_times[5], matrix param1, matrix param2, matrix param3, m
 	int num_seg = num_via - 1;
 	num_samples = (via_times[num_seg] - via_times[0]) * SAMPLING_RATE_T1;
 
-	// Calculating Sample Offsets and
-	for (int i = 0; i < num_via - 1; i++)
+	double tau = 0;
+	//num_seg_samples[i] = (via_times[i + 1] - via_times[i]) * SAMPLING_RATE_T1;
+	//seg_offset[i + 1] = seg_offset[i] + num_seg_samples[i];
+
+	// Loop through segments
+	for (int cur_seg = 0; cur_seg < num_via - 1; cur_seg++)
 	{
-		num_seg_samples[i] = (via_times[i + 1] - via_times[i]) * SAMPLING_RATE_T1;
-		seg_offset[i + 1] = seg_offset[i] + num_seg_samples[i];
+		// Parameterized Time
+		double time = h[cur_seg] / (num_samples / (num_via - 1));
 
-		// Loop through segments
-		for (int cur_seg = 0; cur_seg < num_via - 1; cur_seg++)
+		// Sample within segments
+		for (int cur_sample = (num_samples / (num_via - 1))* cur_seg; cur_sample < (num_samples / (num_via - 1))* cur_seg + (num_samples / (num_via - 1)); cur_sample++)
 		{
-			// Sample within segments
-			for (int cur_sample = seg_offset[cur_seg]; cur_sample < seg_offset[cur_seg + 1]; cur_sample++)
-			{
-				// Parameterized Time
-				double tau = (cur_sample - seg_offset[cur_seg]) / num_seg_samples[cur_seg];
 
-				// Calculating Pos
 
-				JointPosArray[cur_sample][0] = param1[cur_seg][0] + param1[cur_seg][1] * tau + param1[cur_seg][2] * pow(tau, 2) + param1[cur_seg][3] * pow(tau, 3);
-				JointPosArray[cur_sample][1] = param2[cur_seg][0] + param2[cur_seg][1] * tau + param2[cur_seg][2] * pow(tau, 2) + param2[cur_seg][3] * pow(tau, 3);
-				JointPosArray[cur_sample][2] = param3[cur_seg][0] + param3[cur_seg][1] * tau + param3[cur_seg][2] * pow(tau, 2) + param3[cur_seg][3] * pow(tau, 3);
-				JointPosArray[cur_sample][3] = param4[cur_seg][0] + param4[cur_seg][1] * tau + param4[cur_seg][2] * pow(tau, 2) + param4[cur_seg][3] * pow(tau, 3);
 
-				// Calculating Vel
-				JointVelArray[cur_sample][0] = (1 / h[cur_seg])*(param1[cur_seg][1] + 2 * param1[cur_seg][2] * tau + 3 * param1[cur_seg][3] * pow(tau, 2));
-				JointVelArray[cur_sample][1] = (1 / h[cur_seg])*(param2[cur_seg][1] + 2 * param2[cur_seg][2] * tau + 3 * param2[cur_seg][3] * pow(tau, 2));
-				JointVelArray[cur_sample][2] = (1 / h[cur_seg])*(param3[cur_seg][1] + 2 * param3[cur_seg][2] * tau + 3 * param3[cur_seg][3] * pow(tau, 2));
-				JointVelArray[cur_sample][3] = (1 / h[cur_seg])*(param4[cur_seg][1] + 2 * param4[cur_seg][2] * tau + 3 * param4[cur_seg][3] * pow(tau, 2));
+			// Calculating Pos
 
-				// Calculating Acl
-				JointAclArray[cur_sample][0] = (1 / pow(h[num_via - 2], 2))*(2 * param1[num_via - 2][2] + 6 * param1[num_via - 2][3] * tau);
-				JointAclArray[cur_sample][1] = (1 / pow(h[num_via - 2], 2))*(2 * param2[num_via - 2][2] + 6 * param2[num_via - 2][3] * tau);
-				JointAclArray[cur_sample][2] = (1 / pow(h[num_via - 2], 2))*(2 * param3[num_via - 2][2] + 6 * param3[num_via - 2][3] * tau);
-				JointAclArray[cur_sample][3] = (1 / pow(h[num_via - 2], 2))*(2 * param4[num_via - 2][2] + 6 * param4[num_via - 2][3] * tau);
-			}
+			JointPosArray[cur_sample][0] = param1[cur_seg][0] + param1[cur_seg][1] * (tau - via_times[cur_seg]) + param1[cur_seg][2] * pow((tau - via_times[cur_seg]), 2) + param1[cur_seg][3] * pow((tau - via_times[cur_seg]), 3);
+			JointPosArray[cur_sample][1] = param2[cur_seg][0] + param2[cur_seg][1] * (tau - via_times[cur_seg]) + param2[cur_seg][2] * pow((tau - via_times[cur_seg]), 2) + param2[cur_seg][3] * pow((tau - via_times[cur_seg]), 3);
+			JointPosArray[cur_sample][2] = param3[cur_seg][0] + param3[cur_seg][1] * (tau - via_times[cur_seg]) + param3[cur_seg][2] * pow((tau - via_times[cur_seg]), 2) + param3[cur_seg][3] * pow((tau - via_times[cur_seg]), 3);
+			JointPosArray[cur_sample][3] = param4[cur_seg][0] + param4[cur_seg][1] * (tau - via_times[cur_seg]) + param4[cur_seg][2] * pow((tau - via_times[cur_seg]), 2) + param4[cur_seg][3] * pow((tau - via_times[cur_seg]), 3);
+
+			// Calculating Vel
+			JointVelArray[cur_sample][0] = param1[cur_seg][1] + 2 * param1[cur_seg][2] * (tau - via_times[cur_seg]) + 3 * param1[cur_seg][3] * pow((tau - via_times[cur_seg]), 2);
+			JointVelArray[cur_sample][1] = param2[cur_seg][1] + 2 * param2[cur_seg][2] * (tau - via_times[cur_seg]) + 3 * param2[cur_seg][3] * pow((tau - via_times[cur_seg]), 2);
+			JointVelArray[cur_sample][2] = param3[cur_seg][1] + 2 * param3[cur_seg][2] * (tau - via_times[cur_seg]) + 3 * param3[cur_seg][3] * pow((tau - via_times[cur_seg]), 2);
+			JointVelArray[cur_sample][3] = param4[cur_seg][1] + 2 * param4[cur_seg][2] * (tau - via_times[cur_seg]) + 3 * param4[cur_seg][3] * pow((tau - via_times[cur_seg]), 2);
+
+			// Calculating Acc
+			JointAclArray[cur_sample][0] = 2 * param1[cur_seg][2] + 6 * param1[cur_seg][3] * (tau - via_times[cur_seg]);
+			JointAclArray[cur_sample][1] = 2 * param2[cur_seg][2] + 6 * param2[cur_seg][3] * (tau - via_times[cur_seg]);
+			JointAclArray[cur_sample][2] = 2 * param3[cur_seg][2] + 6 * param3[cur_seg][3] * (tau - via_times[cur_seg]);
+			JointAclArray[cur_sample][3] = 2 * param4[cur_seg][2] + 6 * param4[cur_seg][3] * (tau - via_times[cur_seg]);
+			tau += time;
 		}
 	}
 
 	//Calculating last sample
 	//Calculating Pos
-	JointPosArray[num_samples][0] = param1[num_via - 2][0] + param1[num_via - 2][1] + param1[num_via - 2][2] + param1[num_via - 2][3];
-	JointPosArray[num_samples][1] = param2[num_via - 2][0] + param2[num_via - 2][1] + param2[num_via - 2][2] + param2[num_via - 2][3];
-	JointPosArray[num_samples][2] = param3[num_via - 2][0] + param3[num_via - 2][1] + param3[num_via - 2][2] + param3[num_via - 2][3];
-	JointPosArray[num_samples][3] = param4[num_via - 2][0] + param4[num_via - 2][1] + param4[num_via - 2][2] + param4[num_via - 2][3];
-
+	JointPosArray[num_samples][0] = param1[num_via - 2][0] + param1[num_via - 2][1] * (tau - via_times[num_via - 2]) + param1[num_via - 2][2] * pow((tau - via_times[num_via - 2]), 2) + param1[num_via - 2][3] * pow((tau - via_times[num_via - 2]), 3);
+	JointPosArray[num_samples][1] = param2[num_via - 2][0] + param2[num_via - 2][1] * (tau - via_times[num_via - 2]) + param2[num_via - 2][2] * pow((tau - via_times[num_via - 2]), 2) + param2[num_via - 2][3] * pow((tau - via_times[num_via - 2]), 3);
+	JointPosArray[num_samples][2] = param3[num_via - 2][0] + param3[num_via - 2][1] * (tau - via_times[num_via - 2]) + param3[num_via - 2][2] * pow((tau - via_times[num_via - 2]), 2) + param3[num_via - 2][3] * pow((tau - via_times[num_via - 2]), 3);
+	JointPosArray[num_samples][3] = param4[num_via - 2][0] + param4[num_via - 2][1] * (tau - via_times[num_via - 2]) + param4[num_via - 2][2] * pow((tau - via_times[num_via - 2]), 2) + param4[num_via - 2][3] * pow((tau - via_times[num_via - 2]), 3);
 	// Calculating Vel
-	JointVelArray[num_samples][0] = (1 / h[num_via - 2])*(param1[num_via - 2][1] + 2 * param1[num_via - 2][2] + 3 * param1[num_via - 2][3]);
-	JointVelArray[num_samples][1] = (1 / h[num_via - 2])*(param2[num_via - 2][1] + 2 * param2[num_via - 2][2] + 3 * param2[num_via - 2][3]);
-	JointVelArray[num_samples][2] = (1 / h[num_via - 2])*(param3[num_via - 2][1] + 2 * param3[num_via - 2][2] + 3 * param3[num_via - 2][3]);
-	JointVelArray[num_samples][3] = (1 / h[num_via - 2])*(param4[num_via - 2][1] + 2 * param4[num_via - 2][2] + 3 * param4[num_via - 2][3]);
+	JointVelArray[num_samples][0] = 0;
+	JointVelArray[num_samples][1] = 0;
+	JointVelArray[num_samples][2] = 0;
+	JointVelArray[num_samples][3] = 0;
 
-	// Calculating Acl
-	JointAclArray[num_samples][0] = (1 / pow(h[num_via - 2], 2))*(2 * param1[num_via - 2][2] + 6 * param1[num_via - 2][3]);
-	JointAclArray[num_samples][1] = (1 / pow(h[num_via - 2], 2))*(2 * param2[num_via - 2][2] + 6 * param2[num_via - 2][3]);
-	JointAclArray[num_samples][2] = (1 / pow(h[num_via - 2], 2))*(2 * param3[num_via - 2][2] + 6 * param3[num_via - 2][3]);
-	JointAclArray[num_samples][3] = (1 / pow(h[num_via - 2], 2))*(2 * param4[num_via - 2][2] + 6 * param4[num_via - 2][3]);
+	JointAclArray[num_samples][0] = 2 * param1[num_via - 2][2] + 6 * param1[num_via - 2][3] * (tau - via_times[num_via - 2]);
+	JointAclArray[num_samples][1] = 2 * param2[num_via - 2][2] + 6 * param2[num_via - 2][3] * (tau - via_times[num_via - 2]);
+	JointAclArray[num_samples][2] = 2 * param3[num_via - 2][2] + 6 * param3[num_via - 2][3] * (tau - via_times[num_via - 2]);
+	JointAclArray[num_samples][3] = 2 * param4[num_via - 2][2] + 6 * param4[num_via - 2][3] * (tau - via_times[num_via - 2]);
 
 	// find maximum Joint Velocities
 	vect JointVel_MAX = { 0, 0, 0, 0 };
@@ -313,6 +367,7 @@ void TraExec(vect* JointPosArray, vect* JointVelArray, vect* JointAccArray, doub
 
 	for (int i = 0; i < num_of_samples; i++)
 	{
+
 		bool success = false;
 		success = MoveWithConfVelAcc(JointPosArray[i], JointVelArray[i], JointAccArray[i]);
 		//success = MoveToConfiguration(JointConfigArray[i], false);
@@ -329,7 +384,6 @@ void TraExec(vect* JointPosArray, vect* JointVelArray, vect* JointAccArray, doub
 
 
 #endif // TrajectoryPlanning_h__
-
 
 
 

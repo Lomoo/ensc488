@@ -1,6 +1,5 @@
 ﻿  test.cpp
-c:\users\sully\desktop\488\planningtrajectory.h(170): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\sully\desktop\488\planningtrajectory.h(182): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\sully\desktop\488\planningtrajectory.h(314): warning C4018: '<': signed/unsigned mismatch
+c:\users\sully\desktop\488\planningtrajectory.h(225): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\sully\desktop\488\planningtrajectory.h(368): warning C4018: '<': signed/unsigned mismatch
 c:\users\sully\desktop\488\test.cpp(259): warning C4326: return type of 'main' should be 'int' instead of 'void'
   Project1.vcxproj -> C:\Users\sully\Desktop\488\Debug\Project1.exe
