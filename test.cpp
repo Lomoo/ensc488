@@ -31,7 +31,7 @@ void TrajectoryPlanning()
 	MatrixInit(param3);
 	MatrixInit(param4);
 
-
+	bool doTraj = true;
 	double times[5] = { 0, 0, 0, 0, 0 };
 	double viax[5] = { 0, 0, 0, 0, 0 };
 	double viay[5] = { 0, 0, 0, 0, 0 };
@@ -39,7 +39,7 @@ void TrajectoryPlanning()
 	double viaphi[5] = { 0, 0, 0, 0, 0 };
 
 	ReadViaPoints(times, viax, viay, viaz, viaphi, num_via);
-
+	
 	vect jointPosVector[5] = { { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
 	for (int i = 0; i < num_via; i++)
 	{
@@ -61,7 +61,8 @@ void TrajectoryPlanning()
 			SOLVE(tempConfigMat, zeroVect, closestSol, zeroVect, sol);
 			if (!sol)
 			{
-				std::cout << "TRAJPLAN: No solutions found for input config" << std::endl;
+				std::cout << "Trajectory Planning: No solutions found for viapoint number " <<  i +1 <<  std::endl;
+				doTraj = false;
 			}
 			VectorCopy(closestSol, jointPosVector[i]);
 			continue;
@@ -70,53 +71,61 @@ void TrajectoryPlanning()
 		SOLVE(tempConfigMat, jointPosVector[i - 1], closestSol, zeroVect, sol);
 		if (!sol)
 		{
-			std::cout << "TRAJPLAN: No solutions found for input config" << std::endl;
+			std::cout << "Trajectory Planning: No solutions found for viapoint number " << i + 1 << std::endl;
+			doTraj = false;
 		}
 		VectorCopy(closestSol, jointPosVector[i]);
 	}
 
-	double via1[5] = { 0, 0, 0, 0, 0 };
-	double via2[5] = { 0, 0, 0, 0, 0 };
-	double via3[5] = { 0, 0, 0, 0, 0 };
-	double via4[5] = { 0, 0, 0, 0, 0 };
+	if (doTraj) {
+		double via1[5] = { 0, 0, 0, 0, 0 };
+		double via2[5] = { 0, 0, 0, 0, 0 };
+		double via3[5] = { 0, 0, 0, 0, 0 };
+		double via4[5] = { 0, 0, 0, 0, 0 };
 
-	for (int i = 0; i < num_via; i++)
-	{
-		via1[i] = jointPosVector[i][0];
-		via2[i] = jointPosVector[i][1];
-		via3[i] = jointPosVector[i][2];
-		via4[i] = jointPosVector[i][3];
-	}
+		for (int i = 0; i < num_via; i++)
+		{
+			via1[i] = jointPosVector[i][0];
+			via2[i] = jointPosVector[i][1];
+			via3[i] = jointPosVector[i][2];
+			via4[i] = jointPosVector[i][3];
+		}
 
-	vect JointPosArray[MAX_DATA_POINTS];
-	vect JointVelArray[MAX_DATA_POINTS];
-	vect JointAccelArray[MAX_DATA_POINTS];
-	int num_samples = 0;
+		vect JointPosArray[MAX_DATA_POINTS];
+		vect JointVelArray[MAX_DATA_POINTS];
+		vect JointAccelArray[MAX_DATA_POINTS];
+		int num_samples = 0;
 
-	// Init Vectors
-	for (int i = 0; i < MAX_DATA_POINTS; i++)
-	{
-		VectorInit(JointPosArray[i]);
-		VectorInit(JointVelArray[i]);
-		VectorInit(JointAccelArray[i]);
-	}
+		// Init Vectors
+		for (int i = 0; i < MAX_DATA_POINTS; i++)
+		{
+			VectorInit(JointPosArray[i]);
+			VectorInit(JointVelArray[i]);
+			VectorInit(JointAccelArray[i]);
+		}
 
-	TraGen(times, via1, via2, via3, via4, param1, param2, param3, param4, num_via);
-	TraCalc(times, param1, param2, param3, param4, num_via, SAMPLING_RATE_T1, JointPosArray, JointVelArray, JointAccelArray, num_samples);
+		TraGen(times, via1, via2, via3, via4, param1, param2, param3, param4, num_via);
+		TraCalc(times, param1, param2, param3, param4, num_via, SAMPLING_RATE_T1, JointPosArray, JointVelArray, JointAccelArray, num_samples);
 
-	if (!TraOutOfLimits(JointPosArray, JointVelArray, JointAccelArray, num_samples)) {
-		TraExec(JointPosArray, JointVelArray, JointAccelArray, SAMPLING_RATE_T1, num_samples);
+		if (!TraOutOfLimits(JointPosArray, JointVelArray, JointAccelArray, num_samples)) {
+			TraExec(JointPosArray, JointVelArray, JointAccelArray, SAMPLING_RATE_T1, num_samples);
+			StopRobot();
+			ResetRobot();
+			JOINT config = { 0, 0, 0, 0 };
+			GetConfiguration(config);
+			WHERE(config[0], config[1], config[2], config[3], config);
+			DisplayV(config);
+		}
+		else {
+			cout << "Cannot move robot due to limits" << endl;
+		}
 	}
 	else {
-		cout << "Cannot move robot due to limits" << endl;
+		return;
 	}
 	
-	StopRobot();
-	ResetRobot();
-	JOINT config = { 0, 0, 0, 0 };
-	GetConfiguration(config);
-	WHERE(config[0], config[1], config[2], config[3], config);
-	DisplayV(config);
+	
+
 }
 
 void WriteJointToCartisan(std::ofstream& fid, vect JointTraj)

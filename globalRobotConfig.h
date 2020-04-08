@@ -157,7 +157,7 @@ bool VelTheta2Check(double vel)
 
 bool VelD3Check(double vel)
 {
-	if ((vel > AccD3_Max || vel < -AccD3_Max)) {
+	if ((vel > VelD3_MAX || vel < -VelD3_MAX)) {
 		return true;
 	}
 	else {
@@ -198,7 +198,7 @@ bool AccTheta2Check(double acc)
 
 bool AccD3Check(double acc)
 {
-	if ((acc > VelD3_MAX || acc < -VelD3_MAX)) {
+	if ((acc > AccD3_Max || acc < -AccD3_Max)) {
 		return true;
 	}
 	else {
