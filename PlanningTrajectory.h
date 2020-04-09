@@ -297,6 +297,31 @@ void TraCalc(double via_times[5], matrix param1, matrix param2, matrix param3, m
 
 	num_samples = num_samples + 1; //TODO: CHECK THIS LATER
 
+
+
+
+
+	//Save sampled trajectory into txt file
+	std::ofstream file5("plannedCart.txt");
+	vect CurPositionVect = { 0, 0, 0, 0 };
+	if (file5.is_open()) {
+		for (int i = 0; i < num_samples; i++)
+		{
+			double time = i * DELTA_T1;
+			file5 << time << " ";
+			WHERE(JointPosArray[i][0], JointPosArray[i][1], JointPosArray[i][2], JointPosArray[i][3], CurPositionVect);
+			for (int j = 0; j < VECTOR_SIZE; j++) {
+				file5 << CurPositionVect[j] << " ";
+			}
+			file5 << std::endl;
+
+		}
+		file5.close();
+	}
+	else {
+		std::cout << "unable to open file";
+	}
+
 	//Save sampled trajectory into txt file
 	std::ofstream file("plannedP.txt");
 	if (file.is_open()) {

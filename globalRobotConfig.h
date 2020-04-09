@@ -10,8 +10,8 @@
 //////////////////////////
 // Trajectory Constants //
 //////////////////////////
-//#define filename "viapoints.txt"
-#define filename "velocityLimits.txt"
+#define filename "viapoints.txt"
+//#define filename "velocityLimits.txt"
 //#define filename "JointLimits.txt"
 //#define filename "JointLimits2.txt"
 //#define filename "extraTests.txt"
@@ -31,9 +31,7 @@
 
 #define MAX_DATA_POINTS ((int)SAMPLING_RATE_T1 * MAX_TIME)
 
-#define SIM_SAMPLE_RATE 60
-#define SIM_MAX_TIME 20
-#define MAX_DATA_POINTS_SIM (SIM_SAMPLE_RATE*SIM_MAX_TIME)
+
 
 /////////////////////////////////////
 // Global Constants and Parameters //
